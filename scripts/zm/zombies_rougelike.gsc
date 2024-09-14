@@ -8,6 +8,8 @@
 #using scripts\zm\_zm_score;
 #using scripts\zm\_zm_game_module;
 #using scripts\zm\_zm;
+#using scripts\zm\_zm_powerup_fire_sale;
+#using scripts\shared\array_shared;
 
 #insert scripts\shared\shared.gsh;
 #insert scripts\shared\version.gsh; 
@@ -30,18 +32,66 @@ function __main__(){
         level.players[i].score += 100000;
     }
 
-    wait(15);
-    IPrintLnBold("Respawn!");
+    array::thread_all( level.chests, &chest_think );
 
-    // zm_game_module::respawn_players();
-    spawnPoints = struct::get_array("initial_spawn_points", "targetname");
-                    
-    assert(IsDefined(spawnPoints), "Could not find initial spawn points!");
+    wait(10);
+    init_shop();
+}
 
-    for(i = 0; i < level.players.size; i++) {
-        player = level.players[i];
-        spawnPoint = zm::getFreeSpawnpoint( spawnPoints, player );
-        player setorigin(spawnPoint.origin);
-        player setplayerangles (spawnPoint.angles);
+function init_shop()
+{
+	// If chests use a special leaving wait till it is away
+	if( IS_TRUE( level.custom_firesale_box_leave ) )
+	{
+		while( zm_powerup_fire_sale::firesale_chest_is_leaving() )
+		{
+			WAIT_SERVER_FRAME;
+		}
+	}
+
+	level notify ("powerup fire sale");
+	level endon ("powerup fire sale");
+
+    IPrintLnBold("You have 90 seconds to use the shop and go to the mystery box!");
+    level notify("zombies_rougelike_shop_start");
+	    
+	level.zombie_vars["zombie_powerup_fire_sale_on"] = true;
+	level.disable_firesale_drop = true;
+	
+	level thread zm_powerup_fire_sale::toggle_fire_sale_on();
+	level.zombie_vars["zombie_powerup_fire_sale_time"] = 90;
+
+	while ( level.zombie_vars["zombie_powerup_fire_sale_time"] > 0)
+	{
+		WAIT_SERVER_FRAME;
+		level.zombie_vars["zombie_powerup_fire_sale_time"] = level.zombie_vars["zombie_powerup_fire_sale_time"] - 0.05;
+	}
+
+	level thread zm_powerup_fire_sale::check_to_clear_fire_sale();
+
+	level.zombie_vars["zombie_powerup_fire_sale_on"] = false;
+	level notify ( "fire_sale_off" );	
+}
+
+// This function waits until the shop is initialized then waits until a box is used to start the shop
+function chest_think() {
+    level waittill("zombies_rougelike_shop_start");
+    user = undefined;
+    original_cost = self.zombie_cost;
+    self.zombie_cost = 0;
+
+    while( 1 )
+	{
+        self waittill( "trigger", user );
+        if (user == level)
+            continue;
+        break;
     }
+
+    self waittill("trigger");
+    self.zombie_cost = original_cost;
+    // End firesale right after box is used
+    level.zombie_vars["zombie_powerup_fire_sale_time"] = 0;
+
+    self chest_think();
 }
