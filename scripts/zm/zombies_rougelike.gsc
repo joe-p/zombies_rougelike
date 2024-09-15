@@ -11,6 +11,7 @@
 #using scripts\shared\array_shared;
 #using scripts\zm\_zm_utility; 
 #using scripts\shared\ai\zombie_utility;
+#using scripts\zm\_t9_wonderfizz;
 
 #insert scripts\shared\shared.gsh;
 #insert scripts\shared\version.gsh; 
@@ -32,6 +33,7 @@ function __main__(){
     for(i = 0; i < level.players.size; i++) {
         player = level.players[i];
         player.zrl_chest_cost_mult = 2;
+        player _t9_wonderfizz::OpenBuyablesMenu();
     }
 
     thread round_listener();
