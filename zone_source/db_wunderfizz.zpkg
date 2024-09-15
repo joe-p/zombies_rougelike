@@ -1,0 +1,11 @@
+// Cold War Wonderfizz
+scriptparsetree,scripts/zm/_t9_wonderfizz.gsc
+
+rawfile,ui/uieditor/menus/Craftables/WonderfizzMenuBase.lua
+rawfile,ui/uieditor/widgets/Wonderfizz/PerkMenuTabBar.lua
+rawfile,ui/uieditor/widgets/Wonderfizz/PerkTabBarListItem.lua
+rawfile,ui/uieditor/widgets/Wonderfizz/MenuTabPerks.lua
+rawfile,ui/uieditor/widgets/Wonderfizz/MenuListItemWidget.lua
+rawfile,ui/uieditor/widgets/Wonderfizz/PerksUIListWidget.lua
+rawfile,ui/uieditor/widgets/Wonderfizz/ExitButtonDobby.lua
+rawfile,ui/uieditor/widgets/backgroundframes/perkmenuframe.lua
