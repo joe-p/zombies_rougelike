@@ -28,23 +28,79 @@ DataSources.BuyablePerksDataSource = DataSourceHelpers.ListSetup("BuyablePerksDa
         quickReviveCost = 1500
     end
 
-    -- Stock 8 perks (no electric cherry)
-    AddPerkEntry("Quick Revive", quickReviveCost, "perk.quickrevive", "ui_purchasemenu_quickrevive", "Drink to revive faster. Self-Revive on solo.")
-    AddPerkEntry("Deadshot Daquiri", 1500, "perk.deadshot", "ui_purchasemenu_deadshot", "Drink to improve aiming down sights.")
-    AddPerkEntry("Double Tap 2.0", 2000, "perk.doubletap2", "ui_purchasemenu_doubletap", "Drink to shoot double firepower.")
-    AddPerkEntry("Stamin-Up", 2000, "perk.staminup", "ui_purchasemenu_staminup", "Drink to run and sprint faster.")
-    AddPerkEntry("Juggernog", 2500, "perk.armorvest", "ui_purchasemenu_armorvest", "Drink to increase health.")
-    AddPerkEntry("Speed Cola", 3000, "perk.fastreload", "ui_purchasemenu_speedcola", "Drink to reload faster.")
-    AddPerkEntry("Widows Wine", 4000, "perk.widowswine", "ui_purchasemenu_widows", "Drink to gain Widow's Wine grenades.")
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
+    local perk_entries = {
+        {
+            name = "Quick Revive",
+            cost = quickReviveCost,
+            responseStr = "perk.quickrevive",
+            iconName = "ui_purchasemenu_quickrevive",
+            description = "Drink to revive faster. Self-Revive on solo."
+        },
+        {
+            name = "Double Tap 2.0",
+            cost = 2000,
+            responseStr = "perk.doubletap2",
+            iconName = "ui_purchasemenu_doubletap",
+            description = "Drink to shoot double firepower."
+        },
+        {
+            name = "Stamin-Up", 
+            cost = 2000,
+            responseStr = "perk.staminup",
+            iconName = "ui_purchasemenu_staminup",
+            description = "Drink to run and sprint faster."
+        },
+        {
+            name = "Juggernog",
+            cost = 2500,
+            responseStr = "perk.armorvest", 
+            iconName = "ui_purchasemenu_armorvest",
+            description = "Drink to increase health."
+        },
+        {
+            name = "Speed Cola",
+            cost = 3000,
+            responseStr = "perk.fastreload",
+            iconName = "ui_purchasemenu_speedcola",
+            description = "Drink to reload faster."     
+        },
+        -- TODO: For now focusing on perks that are easy to fractionalize
+        -- {
+        --     name = "Widows Wine",
+        --     cost = 4000,
+        --     responseStr = "perk.widowswine",
+        --     iconName = "ui_purchasemenu_widows",
+        --     description = "Drink to gain Widow's Wine grenades."
+        -- }, 
+        -- {
+        --     name = "Mule Kick",
+        --     cost = 4000,
+        --     responseStr = "perk.additionalprimaryweapon",
+        --     iconName = "ui_purchasemenu_mulekick",
+        --     description = "Drink to carry an additional weapon."
+        -- },
+        -- {
+        --     name = "Deadshot Daquiri",
+        --     cost = 1500,
+        --     responseStr = "perk.deadshot",
+        --     iconName = "ui_purchasemenu_deadshot",
+        --     description = "Drink to improve aiming down sights."
+        -- },
+    }
+    
+    math.randomseed(Engine.CurrentTime())
 
-    -- debug start
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Widows Wine", 4000, "perk.widowswine", "ui_purchasemenu_widows", "Drink to gain Widow's Wine grenades.")
-    -- debug end
+    -- shuffle perk_entries
+    for i = #perk_entries, 2, -1 do
+        local j = math.random(i)
+        perk_entries[i], perk_entries[j] = perk_entries[j], perk_entries[i]
+    end
+
+    for i = 1, 3 do
+        local perk = perk_entries[i]
+        AddPerkEntry(perk.name, perk.cost, perk.responseStr, perk.iconName, perk.description)
+    end
+
 
     -- Logical's perks
     --AddPerkEntry("Fighter's Fizz", 3500, "perk.jetquiet", "ui_purchasemenu_ffyl", "Drink to regain all perks on downed kills.")
