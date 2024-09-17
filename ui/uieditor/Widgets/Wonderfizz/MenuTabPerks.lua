@@ -38,14 +38,6 @@ DataSources.BuyablePerksDataSource = DataSourceHelpers.ListSetup("BuyablePerksDa
     AddPerkEntry("Widows Wine", 4000, "perk.widowswine", "ui_purchasemenu_widows", "Drink to gain Widow's Wine grenades.")
     AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
 
-    -- debug start
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
-    AddPerkEntry("Widows Wine", 4000, "perk.widowswine", "ui_purchasemenu_widows", "Drink to gain Widow's Wine grenades.")
-    -- debug end
-
     -- Logical's perks
     --AddPerkEntry("Fighter's Fizz", 3500, "perk.jetquiet", "ui_purchasemenu_ffyl", "Drink to regain all perks on downed kills.")
     --AddPerkEntry("I.C.U.", 2500, "perk.immunecounteruav", "ui_purchasemenu_icu", "Drink for faster low-health regen.")
@@ -64,6 +56,17 @@ DataSources.BuyablePerksDataSource = DataSourceHelpers.ListSetup("BuyablePerksDa
     - the "perk." is needed before the speciality
 
     ]]
+
+    --- shuffle dataTable ensuring no duplicates
+    for i = #dataTable, 2, -1 do
+        local j = math.random(i)
+        dataTable[i], dataTable[j] = dataTable[j], dataTable[i]
+    end
+
+    --- delete until only 3 are left
+    while #dataTable > 3 do
+        table.remove(dataTable)
+    end
 
     return dataTable
 end, true)

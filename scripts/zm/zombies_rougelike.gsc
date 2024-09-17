@@ -33,61 +33,20 @@ function __main__(){
     for(i = 0; i < level.players.size; i++) {
         player = level.players[i];
         player.zrl_chest_cost_mult = 2;
-        player _t9_wonderfizz::OpenBuyablesMenu();
+        player GiveWeapon(GetWeapon("bowie_knife"));
     }
-
+    zombie_utility::set_zombie_var( "zombie_move_speed_multiplier", 10, false, 2 );
     thread round_listener();
-    thread infinite_starting_ammo();
-}
-
-function infinite_starting_ammo() {
-    // Stop once the first shop has started
-    level endon("zombies_rougelike_shop_start");
-
-    while(1) {
-        wait(0.05);
-        for(i = 0; i < level.players.size; i++) {
-            player = level.players[i];
-            wpn_type = player GetCurrentWeapon();
-            clip_ammo = player GetWeaponAmmoClip( wpn_type );
-            if ( clip_ammo == 0 ) {
-                player GiveMaxAmmo(wpn_type);
-            }
-        }
-    }
 }
 
 function round_listener() {
-    run_speed = 50;
-    level.zombie_move_speed = run_speed;
+    shop_interval = 3;
 
-
-    zombie_utility::set_zombie_var( "zombie_move_speed_multiplier", 15,	false, 2 );
-    // Default increase is 100, but we're setting it to 0 to balance for faster zombies and starting weapon only
-    zombie_utility::set_zombie_var( "zombie_health_increase", 0, false, 2 );
     while(1) {
         level waittill("end_of_round");
 
-        for(i = 0; i < level.players.size; i++) {
-            player = level.players[i];
-            player _t9_wonderfizz::OpenBuyablesMenu();
-        }
-
-        // Rounds < 10 will always have running zombies
-        if (zm::get_round_number() < 10) {
-            level.zombie_move_speed = run_speed;
-        }
-
-        if (zm::get_round_number() < 3) {
-            continue;
-        }
-
-        if (zm::get_round_number() == 3) {
-            // Bump up health scaling to 135 after the first shop to balance out lower health in earlier rounds
-            zombie_utility::set_zombie_var( "zombie_health_increase", 135, false, 2 );
-        }
-
-        if (zm::get_round_number() % 3 == 0) {
+        // Shop is every 3 rounds
+        if (zm::get_round_number() % shop_interval == 0) {
             init_shop();
         }
     }
@@ -113,6 +72,10 @@ function init_shop()
 
     IPrintLnBold("You have 30 seconds to use the shop and go to the mystery box!");
     level notify("zombies_rougelike_shop_start");
+    for(i = 0; i < level.players.size; i++) {
+        player = level.players[i];
+        player _t9_wonderfizz::OpenBuyablesMenu();
+    }
 	    
 	level.zombie_vars["zombie_powerup_fire_sale_on"] = true;
 	level.disable_firesale_drop = true;
