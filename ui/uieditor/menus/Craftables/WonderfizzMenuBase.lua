@@ -18,6 +18,7 @@ local function PostLoadCallback(HudRef, InstanceRef)
 
     local framedWidget = HudRef.TabFrame.framedWidget
     if framedWidget then
+        framedWidget.ListBackground.CraftablesList:SetDataSources("BuyablePerksDataSource")
         framedWidget.ListBackground.CraftablesList:ScaleListAndBackgroundForElementCount()
 
         local List = framedWidget.ListBackground.CraftablesList
@@ -33,6 +34,58 @@ local function PostLoadCallback(HudRef, InstanceRef)
 end
 
 function LUI.createMenu.WonderfizzMenuBase(InstanceRef)
+    local function CreateBuyablePerksDataSource()
+        return DataSourceHelpers.ListSetup("BuyablePerksDataSource", function(InstanceRef)
+            local dataTable = {}
+    
+            local function AddPerkEntry(displayText, cost, responseStr, iconName, description)
+                table.insert(dataTable, {
+                    models = {
+                        text = displayText,
+                        description = description,
+                        cost = cost,
+                        responseStr = responseStr .. "." .. tostring(cost),
+                        name = LUI.splitString(responseStr, ".")[2],
+                        itemIcon = iconName
+                    }
+                })
+            end
+    
+            -- Add your perk entries here
+            -- Example:
+            local quickReviveCost = 500
+            if Engine.GetLobbyClientCount(Enum.LobbyType.LOBBY_TYPE_GAME) > 1 then
+                quickReviveCost = 1500
+            end
+        
+            -- Stock 8 perks (no electric cherry)
+            AddPerkEntry("Quick Revive", quickReviveCost, "perk.quickrevive", "ui_purchasemenu_quickrevive", "Drink to revive faster. Self-Revive on solo.")
+            AddPerkEntry("Deadshot Daquiri", 1500, "perk.deadshot", "ui_purchasemenu_deadshot", "Drink to improve aiming down sights.")
+            AddPerkEntry("Double Tap 2.0", 2000, "perk.doubletap2", "ui_purchasemenu_doubletap", "Drink to shoot double firepower.")
+            AddPerkEntry("Stamin-Up", 2000, "perk.staminup", "ui_purchasemenu_staminup", "Drink to run and sprint faster.")
+            AddPerkEntry("Juggernog", 2500, "perk.armorvest", "ui_purchasemenu_armorvest", "Drink to increase health.")
+            AddPerkEntry("Speed Cola", 3000, "perk.fastreload", "ui_purchasemenu_speedcola", "Drink to reload faster.")
+            AddPerkEntry("Widows Wine", 4000, "perk.widowswine", "ui_purchasemenu_widows", "Drink to gain Widow's Wine grenades.")
+            AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")            
+            -- Shuffle the perks
+            math.randomseed(Engine.CurrentTime())
+            for i = #dataTable, 2, -1 do
+                local j = math.random(i)
+                dataTable[i], dataTable[j] = dataTable[j], dataTable[i]
+            end
+    
+            -- Keep only the first 3 perks
+            while #dataTable > 3 do
+                table.remove(dataTable)
+            end
+    
+            return dataTable
+        end, true)
+    end
+    
+    -- Create a new datasource
+    DataSources.BuyablePerksDataSource = CreateBuyablePerksDataSource()
+
     local HudRef = CoD.Menu.NewForUIEditor("WonderfizzMenuBase")
     
     if PreLoadCallback then
