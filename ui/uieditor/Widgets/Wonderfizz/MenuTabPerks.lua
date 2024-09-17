@@ -6,6 +6,68 @@ require("ui.uieditor.widgets.Wonderfizz.ExitButtonDobby")
 
 CoD.MenuTabPerks = InheritFrom(LUI.UIElement)
 
+-- Datasource for populating our list with elements
+DataSources.BuyablePerksDataSource = DataSourceHelpers.ListSetup("BuyablePerksDataSource", function(InstanceRef)
+    local dataTable = {}
+
+    local function AddPerkEntry(displayText, cost, responseStr, iconName, description)
+        table.insert(dataTable, {
+            models = {
+                text = displayText,
+                description = description,
+                cost = cost,
+                responseStr = responseStr .. "." .. tostring(cost),
+                name = LUI.splitString(responseStr, ".")[2],
+                itemIcon = iconName
+            }
+        })
+    end
+
+    local quickReviveCost = 500
+    if Engine.GetLobbyClientCount(Enum.LobbyType.LOBBY_TYPE_GAME) > 1 then
+        quickReviveCost = 1500
+    end
+
+    -- Stock 8 perks (no electric cherry)
+    AddPerkEntry("Quick Revive", quickReviveCost, "perk.quickrevive", "ui_purchasemenu_quickrevive", "Drink to revive faster. Self-Revive on solo.")
+    AddPerkEntry("Deadshot Daquiri", 1500, "perk.deadshot", "ui_purchasemenu_deadshot", "Drink to improve aiming down sights.")
+    AddPerkEntry("Double Tap 2.0", 2000, "perk.doubletap2", "ui_purchasemenu_doubletap", "Drink to shoot double firepower.")
+    AddPerkEntry("Stamin-Up", 2000, "perk.staminup", "ui_purchasemenu_staminup", "Drink to run and sprint faster.")
+    AddPerkEntry("Juggernog", 2500, "perk.armorvest", "ui_purchasemenu_armorvest", "Drink to increase health.")
+    AddPerkEntry("Speed Cola", 3000, "perk.fastreload", "ui_purchasemenu_speedcola", "Drink to reload faster.")
+    AddPerkEntry("Widows Wine", 4000, "perk.widowswine", "ui_purchasemenu_widows", "Drink to gain Widow's Wine grenades.")
+    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
+
+    -- debug start
+    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
+    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
+    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
+    AddPerkEntry("Mule Kick", 4000, "perk.additionalprimaryweapon", "ui_purchasemenu_mulekick", "Drink to carry an additional weapon.")
+    AddPerkEntry("Widows Wine", 4000, "perk.widowswine", "ui_purchasemenu_widows", "Drink to gain Widow's Wine grenades.")
+    -- debug end
+
+    -- Logical's perks
+    --AddPerkEntry("Fighter's Fizz", 3500, "perk.jetquiet", "ui_purchasemenu_ffyl", "Drink to regain all perks on downed kills.")
+    --AddPerkEntry("I.C.U.", 2500, "perk.immunecounteruav", "ui_purchasemenu_icu", "Drink for faster low-health regen.")
+
+    --[[
+
+    FUNCTION ARGUMENTS:
+
+    AddPerkEntry("Display Name", perk_cost, "perk.speciality", "perk_menu_icon", "description")
+
+    [NOTE]: The "perk_menu_icon" is the name of the image from APE.
+    You must also load any custom images in your zone file OR inside the db_wunderfizz.zpkg file like so:
+
+    image,perk_menu_icon
+
+    - the "perk." is needed before the speciality
+
+    ]]
+
+    return dataTable
+end, true)
+
 local function PostLoadCallback(Widget, InstanceRef, HudRef)
     Widget.ListBackground.CraftablesList:ScaleListAndBackgroundForElementCount()
 

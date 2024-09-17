@@ -63,11 +63,15 @@ function round_listener() {
 
 
     zombie_utility::set_zombie_var( "zombie_move_speed_multiplier", 15,	false, 2 );
-    // Default increase is 100, but we're halving it to balance for the faster zombies
-    // and lack of wall buy weapons
-    zombie_utility::set_zombie_var( "zombie_health_increase", 50, false, 2 );
+    // Default increase is 100, but we're setting it to 0 to balance for faster zombies and starting weapon only
+    zombie_utility::set_zombie_var( "zombie_health_increase", 0, false, 2 );
     while(1) {
-        level waittill("between_round_over");
+        level waittill("end_of_round");
+
+        for(i = 0; i < level.players.size; i++) {
+            player = level.players[i];
+            player _t9_wonderfizz::OpenBuyablesMenu();
+        }
 
         // Rounds < 10 will always have running zombies
         if (zm::get_round_number() < 10) {
@@ -79,11 +83,11 @@ function round_listener() {
         }
 
         if (zm::get_round_number() == 3) {
-            // Bump up health scaling to 110 after the first shop to balance out lower health in earlier rounds
-            zombie_utility::set_zombie_var( "zombie_health_increase", 110, false, 2 );
+            // Bump up health scaling to 135 after the first shop to balance out lower health in earlier rounds
+            zombie_utility::set_zombie_var( "zombie_health_increase", 135, false, 2 );
         }
 
-        if (zm::get_round_number() % 3 == 1) {
+        if (zm::get_round_number() % 3 == 0) {
             init_shop();
         }
     }
