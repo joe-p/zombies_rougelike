@@ -27,23 +27,37 @@ function __init__(){
 }
 
 function __main__(){
+    debug_mode = true;
     level waittill("initial_blackscreen_passed");
-    IPrintLnBold("Hello World!");
+    IPrintLnBold("Welcome to Zombies Rougelike v0.0.0!");
 
-    for(i = 0; i < level.players.size; i++) {
-        player = level.players[i];
-        player.zrl_chest_cost_mult = 2;
+    foreach(player in level.players)
+    {
         player GiveWeapon(GetWeapon("bowie_knife"));
+        if (debug_mode) {
+            player zm_score::add_to_player_score( 100000 );
+        }
     }
-    zombie_utility::set_zombie_var( "zombie_move_speed_multiplier", 10, false, 2 );
-    thread round_listener();
+
+    foreach(chest in level.chests)
+    {
+        chest.zrl_cost_mult = 1;
+        chest.zrl_cost = chest.zombie_cost;
+    }
+
+    zombie_utility::set_zombie_var("zombie_move_speed_multiplier", 10, false, 2);
+    thread round_think();
+
+    if (debug_mode) {
+        thread init_shop();
+    }
 }
 
-function round_listener() {
+function round_think() {
     shop_interval = 3;
 
     while(1) {
-        level waittill("end_of_round");
+        level waittill("between_round_over");
 
         // Shop is every 3 rounds
         if (zm::get_round_number() % shop_interval == 0) {
@@ -56,62 +70,28 @@ function init_shop()
 {
     // Ensure no zombies spawn during the shop
     SetDvar("ai_DisableSpawn",1);
+
+    duration = 60;
+	level.zombie_vars["zombie_powerup_fire_sale_time"] = duration;
+
+    // Be sure to think after starting the firesale started so the cost is updated correctly (and not 10)
+    level thread zm_powerup_fire_sale::start_fire_sale(level.players[0]);
+    if (!level.zombie_vars["zombie_powerup_fire_sale_on"]) {
+        level waittill("fire_sale_on");
+    }
     array::thread_all( level.chests, &chest_think );
 
-	// If chests use a special leaving wait till it is away
-	if( IS_TRUE( level.custom_firesale_box_leave ) )
-	{
-		while( zm_powerup_fire_sale::firesale_chest_is_leaving() )
-		{
-			WAIT_SERVER_FRAME;
-		}
-	}
-
-	level notify ("powerup fire sale");
-	level endon ("powerup fire sale");
-
-    IPrintLnBold("You have 30 seconds to use the shop and go to the mystery box!");
+    IPrintLnBold("You have " + duration + " seconds to use the shop and go to the mystery box!");
     level notify("zombies_rougelike_shop_start");
-    for(i = 0; i < level.players.size; i++) {
-        player = level.players[i];
+    
+    foreach(player in level.players)
+    {
         player _t9_wonderfizz::OpenBuyablesMenu();
     }
-	    
-	level.zombie_vars["zombie_powerup_fire_sale_on"] = true;
-	level.disable_firesale_drop = true;
 
 
-    // Store the original cost of the chests
-    for(i = 0; i < level.chests.size; i++) {
-        level.chests[i].old_cost = level.chests[i].zombie_cost;
-    }
-	
-	level thread zm_powerup_fire_sale::toggle_fire_sale_on();
-
-    // Iterate over the chests and set their zombie_cost to old_cost (the original price before firesale)
-    for(i = 0; i < level.chests.size; i++) {
-        level.chests[i].zombie_cost = level.chests[i].old_cost;
-    }
-
-	level.zombie_vars["zombie_powerup_fire_sale_time"] = 30;
-
-	while ( level.zombie_vars["zombie_powerup_fire_sale_time"] > 0)
-	{
-		WAIT_SERVER_FRAME;
-		level.zombie_vars["zombie_powerup_fire_sale_time"] = level.zombie_vars["zombie_powerup_fire_sale_time"] - 0.05;
-	}
-
-	level thread zm_powerup_fire_sale::check_to_clear_fire_sale();
-
-	level.zombie_vars["zombie_powerup_fire_sale_on"] = false;
-	level notify ( "fire_sale_off" );
-
+	level waittill ( "fire_sale_off" );
     level notify("zombies_rougelike_shop_stop");
-
-    // Iterate over players and reset their chest cost multiplier
-    for(i = 0; i < level.players.size; i++) {
-        level.players[i].zrl_chest_cost_mult = 1;
-    }
 
     SetDvar("ai_DisableSpawn",0);
 }
@@ -121,17 +101,10 @@ function chest_think() {
     level endon("zombies_rougelike_shop_stop");
     while( 1 )
     {
-        user = self.chest_user;
-        // Wait until there is a chest user
-        if (user === undefined || user == level) { 
-            wait(0.1);
-            continue;
-        }
-
-        self.zombie_cost = self.zombie_cost * user.zrl_chest_cost_mult;
-        user.zrl_chest_cost_mult = user.zrl_chest_cost_mult * 2;
-
-        // Once this is triggered, the chest_user should be set to undefined
+        IPrintLnBold("zombie_cost: " + self.zombie_cost + " zrl_cost: " + self.zrl_cost + " zrl_cost_mult: " + self.zrl_cost_mult);
+        self.zombie_cost = self.zrl_cost;
         self waittill( "chest_accessed" );
+        self.zrl_cost_mult = self.zrl_cost_mult * 2;
+        self.zrl_cost = self.zrl_cost * self.zrl_cost_mult;
     }
 }
