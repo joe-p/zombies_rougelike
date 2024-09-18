@@ -12,6 +12,7 @@
 #using scripts\zm\_zm_utility; 
 #using scripts\shared\ai\zombie_utility;
 #using scripts\zm\_t9_wonderfizz;
+#using scripts\zm\_zm_magicbox;
 
 #insert scripts\shared\shared.gsh;
 #insert scripts\shared\version.gsh; 
@@ -43,6 +44,7 @@ function __main__(){
     {
         chest.zrl_cost_mult = 1;
         chest.zrl_cost = chest.zombie_cost;
+        chest zm_magicbox::hide_chest();
     }
 
     zombie_utility::set_zombie_var("zombie_move_speed_multiplier", 10, false, 2);
@@ -101,7 +103,6 @@ function chest_think() {
     level endon("zombies_rougelike_shop_stop");
     while( 1 )
     {
-        IPrintLnBold("zombie_cost: " + self.zombie_cost + " zrl_cost: " + self.zrl_cost + " zrl_cost_mult: " + self.zrl_cost_mult);
         self.zombie_cost = self.zrl_cost;
         self waittill( "chest_accessed" );
         self.zrl_cost_mult = self.zrl_cost_mult * 2;

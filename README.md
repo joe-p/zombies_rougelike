@@ -41,7 +41,7 @@ This mod requires that the map keeps the default `zm_powerup_fire_sale::start_fi
 
 ## Chests
 
-Each chest in the map (that should work with firesale) should be in `level.chests`. The chest must notify `chest_accessed` when it is used.
+Each chest in the map (that should work with firesale) should be in `level.chests`. The chest must notify `chest_accessed` when it is used and it should respect `zm_magic_chest::hide_chest();`.
 
 # Credits
 
