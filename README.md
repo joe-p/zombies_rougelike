@@ -26,7 +26,6 @@ Every shop round a "firesale" is activated which causes all mystery boxes in the
 
 # Planned Features
 
-* Disable all wall guns, mystery boxes, and perk machines
 * Reduce effects of base perks but allow them to be bought multiple times (ie. jugg gives less health it normally does, but you can get more by buying it multiple times)
 * Add more unique items to shop with various synergies and tradeoffs (health, damage, speed, drop-rates, scoring, etc.)
 * Determine good scaling model for both the player and zombies health/damage to allow for a less monotonous late-game
@@ -47,3 +46,4 @@ Each chest in the map (that should work with firesale) should be in `level.chest
 
 * [L3akMod](https://wiki.modme.co/wiki/black_ops_3/Lua-(LUI).html) - The D3V Team (DTZxPorter, SE2Dev, Nukem)
 * [Cold War Wunderfizz v3.2](https://www.devraw.net/releases/cold-war-wunderfizz-v3.2) - Dobby
+* [Black Ops 3 Mod Tools Discord](https://discord.com/invite/black-ops-3-mod-tools-230615005194616834) - Everyone there has been super helpful!

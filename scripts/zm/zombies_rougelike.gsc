@@ -32,6 +32,8 @@ function __main__(){
     level waittill("initial_blackscreen_passed");
     IPrintLnBold("Welcome to Zombies Rougelike v0.0.0!");
 
+    level.func_override_wallbuy_prompt = &disable_wallbuy_purchase;
+
     foreach(player in level.players)
     {
         player GiveWeapon(GetWeapon("bowie_knife"));
@@ -48,11 +50,26 @@ function __main__(){
     }
 
     zombie_utility::set_zombie_var("zombie_move_speed_multiplier", 10, false, 2);
+
+    perk_machines = GetEntArray("zombie_vending", "targetname");
+    foreach(perk in perk_machines) {
+        perk.machine Delete();
+        perk.bump Delete();
+        perk.clip ConnectPaths();
+        perk.clip Delete();
+        perk Delete();
+    }
+
     thread round_think();
 
     if (debug_mode) {
         thread init_shop();
     }
+}
+
+function disable_wallbuy_purchase() {
+    self SetHintString("Wallbuys are disabled in Zombies Rougelike!");
+    return false;
 }
 
 function round_think() {
