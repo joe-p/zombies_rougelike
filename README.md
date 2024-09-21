@@ -1,6 +1,6 @@
 # Zombies Rougelike
 
-A work-in-progress rougelike mode for Call of Duty: Black Ops III Zombies. The goal is to create a fun gameplay loop that offers even more replayability to the game.
+A work-in-progress rougelike mode for Call of Duty: Black Ops III Zombies. The goal is to create a fun gameplay loop that offers even more replayability to the game by adding variety to the mid and late game.
 
 # Current Features
 
