@@ -49,6 +49,8 @@ function __main__(){
         chest.zrl_cost = chest.zombie_cost;
         chest zm_magicbox::hide_chest();
     }
+    // Fire sale logic checks if ( level.chest_index != i ), so we need to set chest_index to a random number
+    level.chest_index = 1337;
 
     foreach(bgb_machine in level.bgb_machines)
     {
