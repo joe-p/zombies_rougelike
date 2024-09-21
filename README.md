@@ -46,6 +46,6 @@ Each chest in the map (that should work with firesale) should be in `level.chest
 
 * [L3akMod](https://wiki.modme.co/wiki/black_ops_3/Lua-(LUI).html) - The D3V Team (DTZxPorter, SE2Dev, Nukem)
 * [Cold War Wunderfizz v3.2](https://www.devraw.net/releases/cold-war-wunderfizz-v3.2) - Dobby
-* [Black Ops 3 Mod Tools Discord](https://discord.com/invite/black-ops-3-mod-tools-230615005194616834) - Everyone there has been super helpful! (especially Scrappy and Rayjiun)
+* [Black Ops 3 Mod Tools Discord](https://discord.com/invite/black-ops-3-mod-tools-230615005194616834) - Everyone there has been super helpful!
 * [T7MTEnhancements](https://github.com/Scobalula/T7MTEnhancements) - [Scobalula](https://github.com/Scobalula/)
 * [Decompiled Scripts](https://github.com/shiversoftdev/t7-source) - [serious](https://github.com/shiversoftdev)
