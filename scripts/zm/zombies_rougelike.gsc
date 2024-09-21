@@ -13,6 +13,7 @@
 #using scripts\shared\ai\zombie_utility;
 #using scripts\zm\_t9_wonderfizz;
 #using scripts\zm\_zm_magicbox;
+#using scripts\zm\_zm_bgb_machine;
 
 #insert scripts\shared\shared.gsh;
 #insert scripts\shared\version.gsh; 
@@ -48,6 +49,13 @@ function __main__(){
         chest.zrl_cost = chest.zombie_cost;
         chest zm_magicbox::hide_chest();
     }
+
+    foreach(bgb_machine in level.bgb_machines)
+    {
+        bgb_machine thread bgb_machine::hide_bgb_machine(0);
+    }
+    level.bgb_machines = [];
+
 
     zombie_utility::set_zombie_var("zombie_move_speed_multiplier", 10, false, 2);
 
