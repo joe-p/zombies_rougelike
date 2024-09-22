@@ -33,6 +33,8 @@ function __main__(){
     level waittill("initial_blackscreen_passed");
     IPrintLnBold("Welcome to Zombies Rougelike v0.0.0!");
 
+    // This must be set to 0 to get SOE, DE, and The Giant bgb hintstrings to work
+    level.var_42792b8b = 0;
     level.func_override_wallbuy_prompt = &disable_wallbuy_purchase;
 
     foreach(player in level.players)
