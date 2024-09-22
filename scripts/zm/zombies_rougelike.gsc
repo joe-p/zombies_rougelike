@@ -33,6 +33,8 @@ function __main__(){
     level waittill("initial_blackscreen_passed");
     IPrintLnBold("Welcome to Zombies Rougelike v0.0.0!");
 
+    // This must be set to 0 to get SOE, DE, and The Giant bgb hintstrings to work
+    level.var_42792b8b = 0;
     level.func_override_wallbuy_prompt = &disable_wallbuy_purchase;
 
     foreach(player in level.players)
@@ -56,8 +58,6 @@ function __main__(){
     {
         bgb_machine thread bgb_machine::hide_bgb_machine(0);
     }
-    level.bgb_machines = [];
-
 
     zombie_utility::set_zombie_var("zombie_move_speed_multiplier", 10, false, 2);
 
@@ -109,6 +109,10 @@ function init_shop()
         level waittill("fire_sale_on");
     }
     array::thread_all( level.chests, &chest_think );
+    foreach(bgb_machine in level.bgb_machines)
+    {
+        bgb_machine.base_cost = 5000;
+    }
 
     IPrintLnBold("You have " + duration + " seconds to use the shop and go to the mystery box!");
     level notify("zombies_rougelike_shop_start");
