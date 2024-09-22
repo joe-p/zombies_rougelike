@@ -31,7 +31,7 @@ function __init__(){
 }
 
 function __main__(){
-    debug_mode = true;
+    debug_mode = false;
 
     zrl_perks::init();
     level waittill("initial_blackscreen_passed");
@@ -82,6 +82,8 @@ function __main__(){
     thread round_think();
 
     if (debug_mode) {
+        level.zombie_move_speed = 70;
+        zombie_utility::set_zombie_var("zombie_move_speed_multiplier", 70, false, 2);
         thread init_shop();
     }
 }
@@ -95,6 +97,10 @@ function round_think() {
     shop_interval = 3;
 
     while(1) {
+        foreach(player in level.players) {
+            player.zrl_perks_purchased = [];
+        }
+
         level waittill("between_round_over");
 
         // Shop is every 3 rounds

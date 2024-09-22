@@ -108,9 +108,12 @@ function OpenBuyablesMenu()
 // returns if the player has the given perk
 function playerHasPerk(name)
 {
-    if(self HasPerk("specialty_" + name))
+    foreach(perk in self.zrl_perks_purchased)
     {
-        return true;
+        if(perk == name)
+        {
+            return true;
+        }
     }
     return false;
 }
@@ -144,16 +147,18 @@ function WatchForMenuResponse()
 }
 
 // purchases the given perk
+// self: player
 function perkPurchased(responseData)
 {
     buyableName = responseData[1];
     buyableCost = Int(responseData[2]);
 
-    if(self zm_score::can_player_purchase(buyableCost) && !self HasPerk("specialty_" + buyableName))
+    if(self zm_score::can_player_purchase(buyableCost))
     {
         self zm_score::minus_to_player_score(buyableCost);
         self zm_utility::play_sound_on_ent("purchase");
 
-        self zm_perks::give_perk("specialty_" + buyableName, false);
+        self [[level.zrl_player_perk_fns.levelup[buyableName]]]();
+        array::add(self.zrl_perks_purchased, buyableName);
     }
 }
