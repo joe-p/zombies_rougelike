@@ -10,5 +10,6 @@ rawfile,dummy.cfg
 scriptparsetree,scripts/zm/gametypes/_clientids.gsc
 scriptparsetree,scripts/zm/zombies_rougelike.gsc
 scriptparsetree,scripts/zm/gametypes/zclassic.csc
+scriptparsetree,scripts/zm/zrl_perks.gsc
 
 include,db_wunderfizz

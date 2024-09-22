@@ -14,6 +14,8 @@
 #using scripts\zm\_t9_wonderfizz;
 #using scripts\zm\_zm_magicbox;
 #using scripts\zm\_zm_bgb_machine;
+#using scripts\shared\hud_util_shared;
+#using scripts\zm\zrl_perks;
 
 #insert scripts\shared\shared.gsh;
 #insert scripts\shared\version.gsh; 
@@ -30,6 +32,8 @@ function __init__(){
 
 function __main__(){
     debug_mode = true;
+
+    zrl_perks::init();
     level waittill("initial_blackscreen_passed");
     IPrintLnBold("Welcome to Zombies Rougelike v0.0.0!");
 
@@ -40,7 +44,12 @@ function __main__(){
     foreach(player in level.players)
     {
         player GiveWeapon(GetWeapon("bowie_knife"));
+        player thread healthbar();
+        player zrl_perks::player_init();
         if (debug_mode) {
+            player [[level.zrl_player_perk_fns.levelup.armorvest]]();
+            player [[level.zrl_player_perk_fns.levelup.armorvest]]();
+            player [[level.zrl_player_perk_fns.levelup.armorvest]]();
             player zm_score::add_to_player_score( 100000 );
         }
     }
@@ -139,4 +148,35 @@ function chest_think() {
         self.zrl_cost_mult = self.zrl_cost_mult * 2;
         self.zrl_cost = self.zrl_cost * self.zrl_cost_mult;
     }
+}
+
+function healthbar()
+{
+    self createhealthbar();
+    for(;;)
+    {
+        pad = "";
+        if (self.health < 10) {
+            pad = "  ";
+        } else if (self.health < 100) {
+            pad = " ";
+        }
+        self.zrl_healthbar_text settext(pad + self.health + " / " + self.maxhealth);
+        self.zrl_healthbar hud::updatebar(self.health / self.maxhealth);
+        wait(0.01);
+    }
+}
+
+function createhealthbar()
+{
+    bar_width = 120;
+    bar_height = 12;
+    font_size = 1;
+    y_offset = 5;
+    x_offset = 3;
+
+	self.zrl_healthbar = hud::createbar((1, 0, 0), bar_width, bar_height);
+    self.zrl_healthbar hud::setpoint("TOPLEFT", "TOPLEFT", x_offset, y_offset);
+    self.zrl_healthbar_text = hud::createfontstring("objective", font_size);
+    self.zrl_healthbar_text  hud::setpoint("TOPLEFT", "TOPLEFT", x_offset + Floor(bar_width / 2) - 12, y_offset);
 }
