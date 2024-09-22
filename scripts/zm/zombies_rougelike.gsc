@@ -28,13 +28,6 @@ REGISTER_SYSTEM_EX( "zombies_rougelike", &__init__, &__main__, undefined )
 function __init__(){
 }
 
-function bgb_machine_trigger_update_prompt_wrapper(player) {
-    // self.stub.trigger_target.base_cost is what's used later as the base_cost in function_6c7a96b4
-    // This prints 5000... proving that self.stub.trigger_target.base_cost is correct, yet the hintstring is still incorrect
-    IPrintLnBold(self.stub.trigger_target.base_cost);
-    return bgb_machine::bgb_machine_trigger_update_prompt(player);
-}
-
 function __main__(){
     debug_mode = true;
     level waittill("initial_blackscreen_passed");
@@ -62,7 +55,6 @@ function __main__(){
     foreach(bgb_machine in level.bgb_machines)
     {
         bgb_machine thread bgb_machine::hide_bgb_machine(0);
-        bgb_machine.unitrigger_stub.prompt_and_visibility_func = &bgb_machine_trigger_update_prompt_wrapper;
     }
 
     zombie_utility::set_zombie_var("zombie_move_speed_multiplier", 10, false, 2);
